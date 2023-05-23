@@ -1,0 +1,43 @@
+---
+# tasks file for k8s-all
+- name: Update apt cache
+  apt:
+      update_cache: yes
+      changed_when: false
+- name: Install required packages
+  apt:
+     name: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common']
+     state: present
+
+- name: Add Kubernetes apt key
+  apt_key:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      state: present
+
+- name: Add Kubernetes apt repository
+  apt_repository:
+      repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+      state: present
+
+- name: Install Docker
+  apt:
+     name: docker.io
+     state: present
+
+- name: Install Kubernetes components
+  apt:
+     name: ['kubelet', 'kubeadm', 'kubectl']
+     state: present
+
+- name: Enable and start Docker service
+  service:
+      name: docker
+      state: started
+      enabled: yes
+- name: Enable and start kubelet service
+  service:
+      name: kubelet
+      state: started
+      enabled: yes
+
+
